@@ -1,0 +1,36 @@
+so same as a regular swerve, each differential swerve module has 2 inputs: wheel power and swivel angle. 
+wheel power is proportional to the input power (joystick or whatever) and swivel angle 
+is controlled by a pid loop with the target angle being the input. 
+So the first difference comes when calculating 
+the angle of the module (assuming you're not using an absolute encoder, if you are then this doesn't matter). 
+
+To calculate the angle of the module relative to the starting position using the drive motor encoders, 
+you take the average of the angles of the big ring gears (which are directly controlled by the drive motors). 
+it boils down to angle of the module = (encoder a + encoder b) x (constant determined your gear ratio), 
+and thats the absolute angle of the module at any point 
+(absolute calculation, you just run that and angle wrap the result to get the current angle). 
+So this calculted value replaces the value of the aboslute encoder in standard swerve code, 
+treat it as an aboslute encoder. So then the second difference between diffy swerve and 
+regular swerve is how you apply power to the motors. 
+Each motor power is calculted by the sum of two values, 
+one being the module orientiation pid loop's result and the other being the wheel power. 
+Both motors get the same value from the pid loop, as both motors have to turn in the same direction to swivel 
+the module. Then for wheel power, one motor gets a positive value 
+and the other gets the same value but times -1, as you have to turn the motors in opposite directions 
+to turn the wheel. So it comes down to 
+MotorAPower = (module pid result) + (wheel power) and MotorBPower = (module pid result) - (wheel power). 
+Everything else is exactly the same as standard swerve.
+
+~Important part : I'm an idiot and assumed that the Ange to difference between motor ratio was not constant~
+Finding said constant is v easy once we able to reliably keep motors at same rom Wich we have to do any way
+
+
+CountAVG = avg(motor1pos, motor2pos)
+wrappedCounts = CountAVG // 42 counts per revolution of a NEO motor
+modRev = wrappedCounts / 4.8 // gear ratio constant
+modAngle = modRev * 360 OR 2PI // depending on degrees or radians
+
+magicSwerveNumber = 360 / (4.8 * 42)
+magicSwerveNumber = 1.786
+
+modAngle = avg(motor1Pos, motor2Pos)(1.786)
