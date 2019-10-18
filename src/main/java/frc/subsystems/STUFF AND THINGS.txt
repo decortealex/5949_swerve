@@ -18,7 +18,9 @@ Both motors get the same value from the pid loop, as both motors have to turn in
 the module. Then for wheel power, one motor gets a positive value 
 and the other gets the same value but times -1, as you have to turn the motors in opposite directions 
 to turn the wheel. So it comes down to 
+
 MotorAPower = (module pid result) + (wheel power) and MotorBPower = (module pid result) - (wheel power). 
+
 Everything else is exactly the same as standard swerve.
 
 ~Important part : I'm an idiot and assumed that the Ange to difference between motor ratio was not constant~
