@@ -36,3 +36,7 @@ magicSwerveNumber = 360 / (4.8 * 42)
 magicSwerveNumber = 1.786
 
 modAngle = avg(motor1Pos, motor2Pos)(1.786)
+
+XBOX One Controller:
+Left Joystick: translation
+Right Joystick: rotation

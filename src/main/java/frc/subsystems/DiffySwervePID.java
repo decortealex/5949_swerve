@@ -60,31 +60,33 @@ public class DiffySwervePID extends PIDSubsystem {
 
   */
 
-  private static double kP = 0.00065;
-  private static double kI = 0.0;
-  private static double kD = 0.0017;
-  private static double kF = 0.0075;
+  private static double kP = 2.5;
+  private static double kI = 5.5e-2;
+  private static double kD = 8.5;
+  private static double kF = 9e-3;
 
   private static double period = .025;
 
   private static double setpoint = 0;
 
-  private static final double SWERVE_RATIO = 75;
+  private static final double SWERVE_RATIO = 60;
+  private static final double MAXRPM = 5700;
 
-  private CANSparkMax motor0;
-  private CANSparkMax motor1;
+  // private CANSparkMax motor0;
+  // private CANSparkMax motor1;
 
-  private CANEncoder motor0Enc;
-  private CANEncoder motor1Enc;
+  // private CANEncoder motor0Enc;
+  // private CANEncoder motor1Enc;
 
-  private Follower fMotor;
+  private NEOMotor2 motor0;
+  private NEOMotor2 motor1;
 
   private ModuleID modID;
 
   private double output;
 
 
-  public DiffySwervePID() {
+  public DiffySwervePID(ModuleID id) {
     // Intert a subsystem name and PID values here
     super("Differential", kP, kI, kD, kF, period);
     // Use these to get going:
@@ -92,17 +94,29 @@ public class DiffySwervePID extends PIDSubsystem {
     // to
     // enable() - Enables the PID controller.
 
-    motor0 = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-    motor1 = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+    switch(id) {
+      case FR:
+        motor0 = new NEOMotor2(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor2(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+        break;
+      case FL:
+        motor0 = new NEOMotor2(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor2(4, CANSparkMaxLowLevel.MotorType.kBrushless);
+        break;
+      case BR:
+        motor0 = new NEOMotor2(5, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor2(6, CANSparkMaxLowLevel.MotorType.kBrushless);
+        break;
+      case BL:
+        motor0 = new NEOMotor2(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor2(8, CANSparkMaxLowLevel.MotorType.kBrushless);
+        break;
+      default:
+        System.out.println("id is invalid");
+    }
 
-    motor0Enc = new CANEncoder(motor0);
-    motor1Enc = new CANEncoder(motor1);
-
-    fMotor = new Follower(motor0, motor1);
-
-    // polarities
-    motor0.setInverted(false);
-    motor1.setInverted(false);
+    setOutputRange(-5700, 5700);
+    setAbsoluteTolerance(1.5);
   }
 
   @Override
@@ -114,56 +128,25 @@ public class DiffySwervePID extends PIDSubsystem {
   public void enable() {
     super.enable();
   }
-
-  public double getMotor0Pos() {
-    return motor0Enc.getPosition();
-  }
-
-  public double getMotor1Pos() {
-    return motor1Enc.getPosition();
-  }
-
+  
   public double getPosAvg() {
-    return (getMotor0Pos() + getMotor1Pos()) / 2;
+    return (motor0.getPos() + motor1.getPos()) / 2;
   }
 
   public double getModAngle() {
     return Math.floor(this.getPosAvg() * SWERVE_RATIO);
   }
 
-  public void initialize() {
-    // this.setSetpoint(setpoint);
-    // setOutputRange(-1.0, 1.0);
-    // setAbsoluteTolerance(5);
-    // this.enable();
-    fMotor.init();
-  }
-
-  public void test() {
-    // double prevAngle = 0;
-    // System.out.println("output: " + this.output);
-    // if(this.getModAngle() != prevAngle) {
-    //   System.out.println("Mod Angle: " + this.getModAngle());
-    // }
-    // prevAngle = this.getModAngle();
-    // motor0.set(this.output + 0.9);
-    // motor1.set(this.output - 0.9);
-    // motor0.set(this.output);
-    // motor1.set(this.output);
-    motor0.set(0.1);
-    fMotor.follow();
-    SmartDashboard.putNumber("Encoder Val", this.getModAngle());
-  }
-
-  public void rotModule(double xAxis, double yAxis) {
-    double hypot = Math.hypot(xAxis, yAxis);
-    setpoint = hypot * 360;
-    this.setSetpoint(setpoint);
+  public void moveMod(double angle, double power) {
+    this.setSetpoint(angle);
+    System.out.printf("%nPV: %4.2f%n", this.getModAngle());
+    motor0.set(this.output + (power * MAXRPM));
+    motor1.set(this.output - power * MAXRPM);
   }
 
   public void stop() {
-    motor0.set(0.0);
-    motor1.set(0.0);
+    motor0.stop();
+    motor1.stop();
   }
 
   @Override

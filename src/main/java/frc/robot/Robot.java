@@ -13,11 +13,15 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.controllers.LogitechController;
+import frc.controllers.XOneController;
 import frc.subsystems.DiffySwerve;
 import frc.subsystems.DiffySwervePID;
+import frc.subsystems.Drivetrain;
 import frc.subsystems.DiffySwerve.ModuleID;
 
 import frc.subsystems.NEOMotor;
+import frc.subsystems.NEOMotor2;
+
 import com.revrobotics.CANSparkMaxLowLevel;
 
 /**
@@ -28,21 +32,20 @@ import com.revrobotics.CANSparkMaxLowLevel;
  * directory.
  */
 public class Robot extends TimedRobot {
-  // private final DifferentialDrive m_robotDrive
-  //     = new DifferentialDrive(new PWMVictorSPX(0), new PWMVictorSPX(1));
-  // private final Joystick m_stick = new Joystick(0);
-  // private final Timer m_timer = new Timer();
+  private Drivetrain m_drivetrain;
+  private XOneController m_joystick;
 
-  private final DiffySwervePID diffy = new DiffySwervePID();
-  private final Timer m_timer = new Timer();
-  private final LogitechController controller = new LogitechController(0);
-  private final NEOMotor motor0 = new NEOMotor(1, CANSparkMaxLowLevel.MotorType.kBrushless)
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
-   */
+  */
+
   @Override
   public void robotInit() {
+    // m_swerveModule = new DiffySwervePID();
+    m_drivetrain = new Drivetrain();
+    m_joystick = new XOneController(0);
+    
   }
 
   /**
@@ -50,6 +53,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    // Does this need something?
   }
 
   /**
@@ -57,20 +61,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    }
+    // Does this need something?
+  }
 
   /**
    * This function is called once each time the robot enters teleoperated mode.
    */
   @Override
   public void teleopInit() {
-    // diffy.initialize();
-    motor0.initPID();
+    // m_swerveModule.enable();
+    m_drivetrain.enable();
   }
 
   public void disabledInit() {
     // diffy.stop();
-    motor0.velToPow(500);
+    m_drivetrain.disable();
   }
 
   /**
@@ -78,8 +83,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // diffy.rotModule(controller.getLeftXAxis(), controller.getLeftYAxis());
-    diffy.test();
+    // m_swerveModule.moveMod(m_joystick.getRightAxisAngle(), m_joystick.getLeftYAxis());
+    m_drivetrain.drive(m_joystick.getRightAxisAngle(), m_joystick.getLeftYAxis());
   }
 
   /**
