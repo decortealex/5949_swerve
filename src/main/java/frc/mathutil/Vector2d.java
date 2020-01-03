@@ -1,3 +1,6 @@
+/*
+* Code adapted from Armabot Differential Swerve Github repository.
+*/
 package frc.mathutil;
 
 /**

@@ -8,26 +8,29 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.subsystems.DiffySwervePID;
-import frc.subsystems.DiffySwervePID.ModuleID;
+import frc.subsystems.DiffSwerveMod;
+import frc.subsystems.DiffSwerveMod.ModuleID;
 
 /**
- * Add your docs here.
+ * Combines Swerve modules into single drivetrain
  */
 
 public class Drivetrain extends Subsystem {
-  private DiffySwervePID m_modFR;
-  private DiffySwervePID m_modFL;
-  private DiffySwervePID m_modBR;
-  private DiffySwervePID m_modBL;
+  private DiffSwerveMod m_modFR;
+  private DiffSwerveMod m_modFL;
+  private DiffSwerveMod m_modBR;
+  private DiffSwerveMod m_modBL;
 
   public Drivetrain() {
-    this.m_modFR = new DiffySwervePID(ModuleID.FR);
-    this.m_modFL = new DiffySwervePID(ModuleID.FL);
+    this.m_modFR = new DiffSwerveMod(ModuleID.FR);
+    this.m_modFL = new DiffSwerveMod(ModuleID.FL);
     // this.m_modBR = new DiffySwervePID(ModuleID.BR);
     // this.m_modBL = new DiffySwervePID(ModuleID.BL);
   }
 
+  /**
+   * Enables the required PID loops for each swerve module
+   */
   public void enable() {
     this.m_modFR.enable();
     this.m_modFL.enable();
@@ -35,6 +38,9 @@ public class Drivetrain extends Subsystem {
     // this.m_modBL.enable();
   }
 
+  /**
+   * Disables the running PID loops on each swerve module
+   */
   public void disable() {
     this.m_modFR.stop();
     this.m_modFL.stop();
@@ -42,6 +48,9 @@ public class Drivetrain extends Subsystem {
     // this.m_modBL.stop();
   }
 
+  /**
+   * Uses basic module angle + speed driving scheme
+   */
   public void drive(double angle, double power) {
     this.m_modFR.moveMod(angle, power);
     this.m_modFL.moveMod(angle, power);

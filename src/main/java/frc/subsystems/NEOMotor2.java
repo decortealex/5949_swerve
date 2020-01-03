@@ -17,12 +17,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Add your docs here.
+ * Custom NEO motor class that wraps existing class and adds closed-loop velocity control using PID loops running
+ * on Spark MAX motor controllers
 */
 public class NEOMotor2 extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
-
   private CANSparkMax m_motor;
   private CANPIDController m_pidControl;
   private CANEncoder m_encoder;
@@ -49,24 +47,26 @@ public class NEOMotor2 extends Subsystem {
     m_pidControl.setIZone(kIz);
     m_pidControl.setFF(kFF);
     m_pidControl.setOutputRange(kMinOutput, kMaxOutput);
-
-    // SmartDashboard.putNumber("P Gain", kP);
-    // SmartDashboard.putNumber("I Gain", kI);
-    // SmartDashboard.putNumber("D Gain", kD);
-    // SmartDashboard.putNumber("I Zone", kIz);
-    // SmartDashboard.putNumber("Feed Forward", kFF);
-    // SmartDashboard.putNumber("Max Output", kMaxOutput);
-    // SmartDashboard.putNumber("Min Output", kMinOutput);
   }
 
+  /**
+   * @return Current position of NEO built-in encoder
+   */
   public double getPos() {
     return m_encoder.getPosition();
   }
 
+  /**
+   * Sets NEO to run at set rpm using closed-loop control
+   * @param rpm desired rpm
+   */
   public void set(double rpm) {
     m_pidControl.setReference((rpm), ControlType.kVelocity);
   }
 
+  /**
+   * sets NEO motor to 0, and PID setpoint to 0 (there is no method to 'disable' PID loop on Spark MAX)
+   */
   public void stop() {
     m_motor.set(0);
     setPoint = 0;
@@ -78,6 +78,10 @@ public class NEOMotor2 extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
+  /**
+   * Tester method to tune PID values through SmartDashBoard
+   * @param decimal speed to run NEO motor
+   */
   public void run(double decimal) {
     double p = SmartDashboard.getNumber("P Gain", 0);
     double i = SmartDashboard.getNumber("I Gain", 0);

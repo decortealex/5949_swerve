@@ -20,27 +20,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Add your docs here.
+ * Differential Swerve Module Class used to control individual swerve modules.
 */
-
-/*
-Ziegler-Nichols method (rule of thumb)
-1. set kI and kD to 0
-2. increase kP until output is a sustained and stable oscillation
-3. Record the critical gain kC (the kP that caused the oscillation) and oscillation period pC
-4. Set PID gains as shown below
-  kP = 0.6 * kC
-  kI = 2 * kP/pC
-  kD = 0.125 * kP * pC
-5. adjust as needed
-
-
-*/
-public class DiffySwervePID extends PIDSubsystem {
-  /**
-  * Add your docs here.
-  */
-
+public class DiffSwerveMod extends PIDSubsystem {
   public enum ModuleID {
     FR, FL, BL, BR;
   }
@@ -86,13 +68,8 @@ public class DiffySwervePID extends PIDSubsystem {
   private double output;
 
 
-  public DiffySwervePID(ModuleID id) {
-    // Intert a subsystem name and PID values here
+  public DiffSwerveMod(ModuleID id) {
     super("Differential", kP, kI, kD, kF, period);
-    // Use these to get going:
-    // setSetpoint() - Sets where the PID controller should move the system
-    // to
-    // enable() - Enables the PID controller.
 
     switch(id) {
       case FR:
@@ -119,24 +96,44 @@ public class DiffySwervePID extends PIDSubsystem {
     setAbsoluteTolerance(1.5);
   }
 
+  /**
+   * Sets desired setpoint for PID loop to approach
+   * @param double setpoint to approach
+   */
   @Override
   public void setSetpoint(double setpoint) {
     super.setSetpoint(setpoint);
   }
 
+  /**
+   * Starts PID Loop
+   */
   @Override
   public void enable() {
     super.enable();
   }
   
+  /**
+   * 
+   * @return The average of the encoder values on each built-in NEO motor encoder
+   */
   public double getPosAvg() {
     return (motor0.getPos() + motor1.getPos()) / 2;
   }
 
+  /**
+   * 
+   * @return Module Angle by taking average of the two motors and multiplying by gear ratio
+   */
   public double getModAngle() {
     return Math.floor(this.getPosAvg() * SWERVE_RATIO);
   }
 
+  /**
+   * Moves Swerve module to desired angle and runs at desired power in closed loop control
+   * @param angle angle to hold the module at
+   * @param power speed to run the module at
+   */
   public void moveMod(double angle, double power) {
     this.setSetpoint(angle);
     System.out.printf("%nPV: %4.2f%n", this.getModAngle());
@@ -144,6 +141,9 @@ public class DiffySwervePID extends PIDSubsystem {
     motor1.set(this.output - power * MAXRPM);
   }
 
+  /**
+   * both motors stop and individual PID loops are disabled
+   */
   public void stop() {
     motor0.stop();
     motor1.stop();

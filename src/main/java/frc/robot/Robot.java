@@ -7,22 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import frc.controllers.LogitechController;
-import frc.controllers.XOneController;
-import frc.subsystems.DiffySwerve;
-import frc.subsystems.DiffySwervePID;
+import frc.subsystems.DiffSwerveMod;
 import frc.subsystems.Drivetrain;
-import frc.subsystems.DiffySwerve.ModuleID;
-
-import frc.subsystems.NEOMotor;
-import frc.subsystems.NEOMotor2;
-
-import com.revrobotics.CANSparkMaxLowLevel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,19 +19,17 @@ import com.revrobotics.CANSparkMaxLowLevel;
  * directory.
  */
 public class Robot extends TimedRobot {
+  private DiffSwerveMod m_swerveModule;
   private Drivetrain m_drivetrain;
-  private XOneController m_joystick;
 
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
   */
-
   @Override
   public void robotInit() {
-    // m_swerveModule = new DiffySwervePID();
+    m_swerveModule = new DiffSwerveMod(frc.subsystems.DiffSwerveMod.ModuleID.FL);
     m_drivetrain = new Drivetrain();
-    m_joystick = new XOneController(0);
     
   }
 
@@ -53,7 +38,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // Does this need something?
   }
 
   /**
@@ -61,7 +45,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    // Does this need something?
   }
 
   /**
@@ -84,7 +67,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // m_swerveModule.moveMod(m_joystick.getRightAxisAngle(), m_joystick.getLeftYAxis());
-    m_drivetrain.drive(m_joystick.getRightAxisAngle(), m_joystick.getLeftYAxis());
+    // m_drivetrain.drive(m_joystick.getRightAxisAngle(), m_joystick.getLeftYAxis());
+    System.out.print(m_swerveModule.getModAngle());
+
   }
 
   /**
@@ -92,6 +77,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    System.out.print(m_swerveModule.getModAngle());
   }
 
 }
