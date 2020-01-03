@@ -106,7 +106,7 @@ public class DiffSwerveMod extends PIDSubsystem {
   }
 
   /**
-   * Starts PID Loop
+   * Enables internal PID Controller
    */
   @Override
   public void enable() {

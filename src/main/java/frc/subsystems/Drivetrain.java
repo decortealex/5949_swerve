@@ -29,7 +29,7 @@ public class Drivetrain extends Subsystem {
   }
 
   /**
-   * Enables the required PID loops for each swerve module
+   * Enables internal PID controllers for each swerve module
    */
   public void enable() {
     this.m_modFR.enable();
@@ -39,7 +39,7 @@ public class Drivetrain extends Subsystem {
   }
 
   /**
-   * Disables the running PID loops on each swerve module
+   * Disables the internal PID controllers for each swerve module
    */
   public void disable() {
     this.m_modFR.stop();
