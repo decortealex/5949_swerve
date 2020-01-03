@@ -20,13 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Custom NEO motor class that wraps existing class and adds closed-loop velocity control using PID loops running
  * on Spark MAX motor controllers
 */
-public class NEOMotor2 extends Subsystem {
+public class NEOMotor extends Subsystem {
   private CANSparkMax m_motor;
   private CANPIDController m_pidControl;
   private CANEncoder m_encoder;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, setPoint;
 
-  public NEOMotor2(int deviceID, CANSparkMaxLowLevel.MotorType type) {
+  public NEOMotor(int deviceID, CANSparkMaxLowLevel.MotorType type) {
     m_motor = new CANSparkMax(deviceID, type);
     m_pidControl = m_motor.getPIDController();
     m_encoder = m_motor.getEncoder();

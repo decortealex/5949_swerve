@@ -60,8 +60,8 @@ public class DiffSwerveMod extends PIDSubsystem {
   // private CANEncoder motor0Enc;
   // private CANEncoder motor1Enc;
 
-  private NEOMotor2 motor0;
-  private NEOMotor2 motor1;
+  private NEOMotor motor0;
+  private NEOMotor motor1;
 
   private ModuleID modID;
 
@@ -73,20 +73,20 @@ public class DiffSwerveMod extends PIDSubsystem {
 
     switch(id) {
       case FR:
-        motor0 = new NEOMotor2(1, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor1 = new NEOMotor2(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor0 = new NEOMotor(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor(2, CANSparkMaxLowLevel.MotorType.kBrushless);
         break;
       case FL:
-        motor0 = new NEOMotor2(3, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor1 = new NEOMotor2(4, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor0 = new NEOMotor(3, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor(4, CANSparkMaxLowLevel.MotorType.kBrushless);
         break;
       case BR:
-        motor0 = new NEOMotor2(5, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor1 = new NEOMotor2(6, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor0 = new NEOMotor(5, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor(6, CANSparkMaxLowLevel.MotorType.kBrushless);
         break;
       case BL:
-        motor0 = new NEOMotor2(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-        motor1 = new NEOMotor2(8, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor0 = new NEOMotor(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor1 = new NEOMotor(8, CANSparkMaxLowLevel.MotorType.kBrushless);
         break;
       default:
         System.out.println("id is invalid");
